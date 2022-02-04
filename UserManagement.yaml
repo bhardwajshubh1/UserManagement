@@ -1,0 +1,290 @@
+openapi: 3.0.3
+info:
+  title: "User Manangement System"
+  description:
+    "**API documentation user management system**"
+  version: 1.0.0
+servers:
+  - url: https://localhost:{port}/api/v1/
+    variables:
+      port:
+        default: "3000"
+        description: "Port assigned to the server process"
+paths:
+  /users:
+    post:
+      tags:
+        - User
+      summary: Create a new user
+      operationId: createUserType
+      requestBody:
+        $ref: "#/components/requestBodies/UserCreateRequest"
+      
+      responses:
+        "200":
+          $ref: "#/components/responses/SuccessResponse"
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "401":
+          $ref: "#/components/responses/ErrorResponse"
+    
+    get:
+      tags:
+        - User
+      summary: Get all the users with filters
+      operationId: getUserType
+      responses:
+        "200":
+          $ref: "#/components/responses/GetUsersSuccessResponse"
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "401":
+          $ref: "#/components/responses/ErrorResponse"
+    
+  
+  /users/{userId}:
+    get:
+      tags:
+        - User
+      summary: Get details of a single user by id
+      operationId: get/jobTypeById
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      responses:
+        "200":
+          $ref: "#/components/responses/GetUserSuccessResponse"
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "401":
+          $ref: "#/components/responses/ErrorResponse"
+        "404":
+          $ref: "#/components/responses/ErrorResponse"
+    
+    put:
+      tags:
+        - User
+      summary: update user by user uuid
+      operationId: update/userTypeById
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      requestBody:
+        $ref: "#/components/requestBodies/UserUpdateRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/SuccessResponse"
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "401":
+          $ref: "#/components/responses/ErrorResponse"
+        "404":
+          $ref: "#/components/responses/ErrorResponse"
+
+    delete:
+      tags:
+        - User
+      summary: delete user by user uuid
+      operationId: delete/userTypeById
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      responses:
+        "204":
+          $ref: "#/components/responses/SuccessResponse"
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "401":
+          $ref: "#/components/responses/ErrorResponse"
+        "404":
+          $ref: "#/components/responses/ErrorResponse"  
+  
+components:
+  schemas:
+    UserCreateInputType:
+      description: Represent user type
+      type: object
+      required:
+        - name
+        - phone
+      properties:
+        name:
+          description: Name of the user
+          type: string
+          minLength: 1
+          maxLength: 20
+        phone:
+          description: Contact number of the user
+          type: string
+          pattern: ^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$
+        age:
+          description: Represents the age og the user
+          type: integer
+          minimum: 14
+          maximum: 70
+
+        gender:
+          description: Represents gender of the user
+          type: string
+          enum: [male, female]
+    
+    UserUpdateInputType:
+      description: Represent user type
+      type: object
+      properties:
+        name:
+          description: Name of the user
+          type: string
+          minLength: 1
+          maxLength: 20
+        phone:
+          description: Contact number of the user
+          type: string
+          pattern: ^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$
+        age:
+          description: Represents the age og the user
+          type: integer
+          minimum: 14
+          maximum: 70
+        gender:
+          description: Represents gender of the user
+          type: string
+          enum: [male, female]
+    
+    UserDeleteType:
+      description: Represent user delete api input
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          $ref: "#/components/parameters/userId"
+
+    UserTypeResponse:
+      description: Represent user type response
+      type: object
+      properties:
+        id:
+          description: Uuid to uniquely identify user in system
+          type: string
+        name:
+          description: Name of the user
+          type: string
+          minLength: 1
+          maxLength: 20
+        phone:
+          description: Contact number of the user
+          type: string
+          pattern: ^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$
+        age:
+          description: Represents the age og the user
+          type: integer
+          minimum: 14
+          maximum: 70
+        gender:
+          description: Represents gender of the user
+          type: string
+          enum: [male, female]
+    
+    SuccessResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: ok response
+          enum: [200, 201, 204]
+        data:
+          type: object
+          properties:
+            id:
+              description: Unique id  representing entity in system
+              type: string
+              minLength: 1
+              maxLength: 70
+    
+    GlobalErrorResponse:
+      description: Global error response schema
+      type: object
+      properties:
+        code:
+          type: integer
+          default: 400
+          enum: [400,401,403,404]
+        
+        description:
+          type: string
+
+  parameters:
+    userId:
+      name: userId
+      description: Unique user id
+      in: path
+      required: true
+      schema:
+        type: string
+  
+  requestBodies:
+    UserCreateRequest:
+      description: User create request
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UserCreateInputType"
+    
+    UserUpdateRequest:
+      description: User create request
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UserUpdateInputType"
+    
+    UserDeletedRequest:
+      description: User delete request
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UserDeleteType"
+
+  responses:
+    
+    ErrorResponse:
+      description: Error Occurred
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GlobalErrorResponse"
+    
+    SuccessResponse:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/SuccessResponse"
+    
+    GetUserSuccessResponse:
+      description: Success response for fetch single user by id api
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                default: 200
+              data:
+                $ref: "#/components/schemas/UserTypeResponse"
+    
+    GetUsersSuccessResponse:
+      description: Success response for fetch all the users api
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                default: 200
+              data:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserTypeResponse"
