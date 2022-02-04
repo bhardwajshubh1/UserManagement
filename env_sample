@@ -1,1 +1,7 @@
+NODE_ENV=
 PORT=
+
+# cassandra config
+CONTACT_POINTS=
+LOCAL_DATACENTER=
+KEYSPACE=
