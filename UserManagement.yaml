@@ -113,7 +113,7 @@ components:
         phone:
           description: Contact number of the user
           type: string
-          pattern: ^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$
+          pattern: ^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$
         age:
           description: Represents the age og the user
           type: integer
@@ -137,7 +137,7 @@ components:
         phone:
           description: Contact number of the user
           type: string
-          pattern: ^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$
+          pattern: ^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$
         age:
           description: Represents the age og the user
           type: integer
@@ -172,7 +172,7 @@ components:
         phone:
           description: Contact number of the user
           type: string
-          pattern: ^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$
+          pattern: ^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$
         age:
           description: Represents the age og the user
           type: integer
