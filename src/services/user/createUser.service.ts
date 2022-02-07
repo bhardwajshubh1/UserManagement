@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { CreateUserInput, UserResposeType, UserEntity } from '../../interfaces/user.interfaces'
+import { CreateUserInput, UserResposeType } from '../../interfaces/user.interfaces'
 import { types } from 'cassandra-driver'
 import cassandraClient from './../../config/db.config'
 import client from '../../config/elasticsearch.config'
@@ -24,7 +24,7 @@ export default async function  (req: Request, res: Response) {
         const responseObject: UserResposeType = {
             code: 200,
             data: {
-                id
+                id: id.toString()
             }
         }
         

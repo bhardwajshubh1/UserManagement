@@ -12,6 +12,13 @@ export interface CreateUserInput {
     gender?: Gender
 }
 
+export interface UpdateUserInput {
+    name?: string
+    phone?: string
+    age?: number
+    gender?: Gender
+}
+
 export interface UserEntity {
     id: types.Uuid
     name: string
@@ -21,7 +28,7 @@ export interface UserEntity {
 }
 
 type CreateOrUpdateUserResponse = {
-    id: types.Uuid
+    id: string
 }
 
 export interface UserResposeType {

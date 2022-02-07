@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { CreateUserInput, UserResposeType, UserEntity, GetUserResposeType } from '../../interfaces/user.interfaces'
+import { UserEntity, GetUserResposeType } from '../../interfaces/user.interfaces'
 import client from '../../config/elasticsearch.config'
 import { ErrorResponseType } from '../../interfaces/common.interface'
 import { ELASTIC_SCHEMAS } from '../../config/constants'
