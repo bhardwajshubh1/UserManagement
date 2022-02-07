@@ -28,3 +28,8 @@ export interface UserResposeType {
     code: number
     data: CreateOrUpdateUserResponse 
 }
+
+export interface GetUserResposeType {
+    code: number
+    data: UserEntity
+}
