@@ -1,6 +1,6 @@
 
 import { types } from 'cassandra-driver'
-enum Gender {
+enum GENDER {
     'male',
     'female'
 }
@@ -9,14 +9,14 @@ export interface CreateUserInput {
     name: string
     phone: string
     age?: number
-    gender?: Gender
+    gender?: GENDER
 }
 
 export interface UpdateUserInput {
     name?: string
     phone?: string
     age?: number
-    gender?: Gender
+    gender?: GENDER
 }
 
 export interface UserEntity {
@@ -24,7 +24,19 @@ export interface UserEntity {
     name: string
     phone: string
     age: number
-    gender: Gender
+    gender: GENDER
+}
+
+export interface UserEntityResponse {
+    _id: string
+    _index: string
+    _score?: number
+    _type: string
+    _version?: number,
+    _seq_no?: number,
+    _primary_term?: number,
+    found?: true,
+    _source: UserEntity
 }
 
 type CreateOrUpdateUserResponse = {
@@ -38,5 +50,40 @@ export interface UserResposeType {
 
 export interface GetUserResposeType {
     code: number
-    data: UserEntity
+    data: UserEntityResponse | [UserEntityResponse]
+}
+
+export type Fields = [string]
+
+interface Terms {
+    terms: [string]
+}
+
+interface RangeContent {
+    gte? : number | Date
+    lte? : number | Date
+    gt? : number | Date
+    lt? : number | Date
+}
+
+interface Range {
+    age: RangeContent
+    name?: RangeContent
+}
+
+export interface FilterQuery extends Partial<Terms>, Partial<Range> {
+    fields?: Fields
+}
+
+interface QueryObject extends Partial<Terms>, Partial<Range> {}
+
+export interface Filters {
+    query:  {
+        bool: {
+            should: [
+                QueryObject?
+            ]
+        },
+        fields?: Fields
+    }
 }

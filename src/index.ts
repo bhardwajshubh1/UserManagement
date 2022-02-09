@@ -3,7 +3,7 @@ config()
 import express, { Request, Response } from 'express'
 import * as OpenApiValidator from 'express-openapi-validator'
 import { elasticHealthCheck } from './config/elasticsearch.config'
-import { ErrorResponseType } from './interfaces/common.interface'
+import { ErrorResponseType } from './interface'
 import appRoutes from './routes/index'
 
 const app = express()
@@ -12,13 +12,13 @@ app.use(express.json())
 
 elasticHealthCheck()
 
-app.use(
-    OpenApiValidator.middleware({
-      apiSpec: './UserManagement.yaml',
-      validateRequests: true,
-      validateResponses: false,
-    }),
-  )
+// app.use(
+//     OpenApiValidator.middleware({
+//       apiSpec: './UserManagement.yaml',
+//       validateRequests: true,
+//       validateResponses: false,
+//     }),
+//   )
 
 app.use('/api/v1', appRoutes)
 
