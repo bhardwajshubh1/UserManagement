@@ -5,3 +5,6 @@ PORT=
 CONTACT_POINTS=
 LOCAL_DATACENTER=
 KEYSPACE=
+
+# elastic search config
+ELASTIC_HOST=
