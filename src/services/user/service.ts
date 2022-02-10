@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { CreateUserInput, GetUserResposeType, UpdateUserInput, UserEntityResponse, UserResposeType } from '../../interfaces/user.interfaces'
+import { CreateUserInput, FilterQuery, Filters, GetUserResposeType, RangeObject, RangeReducesObjectType, TermObject, UpdateUserInput, UserEntityResponse, UserResposeType } from '../../interfaces/user.interfaces'
 import { types } from 'cassandra-driver'
 import cassandraClient from './../../config/db.config'
 import client from '../../config/elasticsearch.config'
@@ -160,16 +160,53 @@ export const getUserService = async function  (req: Request, res: Response) {
 
 export const getUsersService = async function  (req: Request, res: Response) {
     try {
-        const userId: string = req.params.userId
+        const reqQueryObject: FilterQuery = req.query
 
-        const result = await client.get({
+        const queryObject: Filters = {
+            query: {
+                bool: {
+                    must: []
+                }
+            },
+            _source: []
+        }
+
+        if (reqQueryObject?.termFilter?.length) {
+            for (const ele of reqQueryObject.termFilter) {
+                const termObject: TermObject = {
+                    terms: { [ele.key]: ele.value }
+                }
+                queryObject.query.bool.must.push(termObject)
+            }
+        }
+
+        if (reqQueryObject?.rangeFilter?.length) {
+            const rangeReducesObject = reqQueryObject.rangeFilter.reduce<RangeReducesObjectType>((currentObj, ele) => {
+                if (currentObj[ele.key]) {
+                    currentObj[ele.key].range[ele.key] = { ...currentObj[ele.key].range[ele.key], [ele.operator]: ele.value } 
+                } else {
+                    currentObj[ele.key] = { range: { [ele.key]: { [ele.operator]: ele.value} } }
+                }
+                
+                return currentObj
+            }, {})
+
+            for (const ele of Object.values(rangeReducesObject)) {
+                queryObject.query.bool.must.push(ele)
+            }
+        }
+
+        if (reqQueryObject?.fields) {
+            queryObject._source = reqQueryObject.fields
+        }
+
+        const result = await client.search({
             index: ELASTIC_SCHEMAS.USER_MANAGEMENT,
-            id: userId,
-            type: 'UserEntity'
+            body: queryObject
         })
         const responseObject: GetUserResposeType = {
             code: 200,
-            data: <UserEntityResponse>result
+            data: <[UserEntityResponse]>result.hits.hits
         }
         
         res.status(200).json(responseObject)
