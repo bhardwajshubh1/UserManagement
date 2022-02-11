@@ -8,3 +8,7 @@ KEYSPACE=
 
 # elastic search config
 ELASTIC_HOST=
+
+# Kafka config
+KAFKA_CLIENT_ID=
+KAFKA_BROKERS=

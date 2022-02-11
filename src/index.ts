@@ -5,12 +5,15 @@ import * as OpenApiValidator from 'express-openapi-validator'
 import { elasticHealthCheck } from './config/elasticsearch.config'
 import { ErrorResponseType } from './interface'
 import appRoutes from './routes/index'
+import workers from './woirkers/index'
 
 const app = express()
 
 app.use(express.json())
 
 elasticHealthCheck()
+
+workers()
 
 // app.use(
 //     OpenApiValidator.middleware({

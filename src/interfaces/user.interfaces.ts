@@ -53,37 +53,54 @@ export interface GetUserResposeType {
     data: UserEntityResponse | [UserEntityResponse]
 }
 
-export type Fields = [string]
-
-interface Terms {
-    terms: [string]
-}
-
-interface RangeContent {
-    gte? : number | Date
-    lte? : number | Date
-    gt? : number | Date
-    lt? : number | Date
-}
+export type Fields = [string?]
 
 interface Range {
-    age: RangeContent
-    name?: RangeContent
+    key: string
+    operator: string
+    value: string
 }
 
-export interface FilterQuery extends Partial<Terms>, Partial<Range> {
+
+interface Term {
+    key: string
+    value: [string]
+}
+
+
+export interface FilterQuery {
     fields?: Fields
+    termFilter? : [Term]
+    rangeFilter?: [Range]
 }
 
-interface QueryObject extends Partial<Terms>, Partial<Range> {}
+interface TermObjectType {
+    [key: string]: [string?]
+}
+
+export interface TermObject {
+    terms:  TermObjectType
+}
+
+interface RangeObjectType {
+    [key: string]: Object
+}
+
+export interface RangeObject {
+    range:  RangeObjectType
+}
+
+type QueryObject = (TermObject | RangeObject)[]
 
 export interface Filters {
     query:  {
         bool: {
-            should: [
-                QueryObject?
-            ]
+            must: QueryObject
         },
-        fields?: Fields
     }
+    _source?: Fields
 }
+
+export type RangeReducesObjectType = {
+    [key: string]: RangeObject
+} 
