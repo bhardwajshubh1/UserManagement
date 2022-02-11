@@ -4,23 +4,26 @@ import { types } from 'cassandra-driver'
 import cassandraClient from './../../config/db.config'
 import client from '../../config/elasticsearch.config'
 import { ErrorResponseType } from '../../interface'
-import { ELASTIC_SCHEMAS } from '../../config/constants'
+import { ELASTIC_SCHEMAS, KAFKA_TOPICS } from '../../config/constants'
+import { producer } from '../../config/kafka'
 
 
 export const createUserService = async function  (req: Request, res: Response) {
     try {
         const reqData: CreateUserInput = req.body
         const query = 'insert into users (id, name, phone, age, gender) values (?,?,?,?,?)'
-        const id = types.Uuid.random()
+        let id = types.Uuid.random()
         const params: any = [ id, reqData.name, reqData.phone, reqData.age, reqData.gender ]
         await cassandraClient.execute(query, params, { prepare : true })
-        const obj = {
-            id: `${id}`,
-            index: ELASTIC_SCHEMAS.USER_MANAGEMENT,
-            type: 'UserEntity',
-            body: { id, ...reqData }
-        }
-        const responseObj = await client.index(obj)
+        
+        const objectForKafka = { id , ...reqData }
+        await producer.connect()
+        await producer.send({
+            topic: KAFKA_TOPICS.USER_TOPIC,
+            messages: [
+              { value: JSON.stringify(objectForKafka) },
+            ],
+        })
         
         const responseObject: UserResposeType = {
             code: 200,
